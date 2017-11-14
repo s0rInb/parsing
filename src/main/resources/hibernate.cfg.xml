@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+      <property name="connection.url">jdbc:postgresql://localhost:5432/cross</property>
+      <property name="connection.driver_class">org.postgresql.Driver</property>
+      <property name="connection.username">cross</property>
+      <property name="connection.password">12345</property>
+      <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL94Dialect</property>
+      <!--<property name="hibernate.cache.use_second_level_cache">false</property>-->
+      <property name="hibernate.jdbc.batch_size">50</property>
+
+      <!-- DB schema will be updated if needed -->
+     <property name="hbm2ddl.auto">update</property>
+      <mapping class="com.aston.health.entity.EntityRosminzdrav"/>
+      <mapping class="com.aston.health.entity.EntityRosMinZdravNadzor"/>
+      <mapping class="com.aston.health.entity.Address"/>
+      <mapping class="com.aston.health.entity.Works"/>
+      <mapping class="com.aston.health.entity.EntityFfoms"/>
+      <mapping class="com.aston.health.entity.ClearRosZdravNadzor"/>
+      <mapping class="com.aston.health.entity.ClearAddress"/>
+      <mapping class="com.aston.health.entity.ClearRosminzdrav"/>
+      <mapping class="com.aston.health.entity.ClearFfoms"/>
+      <mapping class="com.aston.health.entity.Result"/>
+  </session-factory>
+</hibernate-configuration>
