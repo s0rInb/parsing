@@ -21,6 +21,15 @@ public class ClearFfoms {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long guid;
+    @Column(name = "serial_code")
+    private Integer serialCode;
+    @Column(name = "indexOfDuplicate")
+    private Integer indexOfDuplicate;
+
+    @Column(name = "clearRosZdravNadzor_serial_code")
+    private Integer clearRosZdravNadzorSerialNumber;
+    @Column(name = "clearRosminzdrav_serial_code")
+    private Integer clearRosminzdravSerialNumber;
 
     @Column(name = "subject", length = 4096)
     private String subject;
@@ -104,4 +113,5 @@ public class ClearFfoms {
         this.addDate = ffoms.getAddDate();
         this.parentGuid = ffoms.getGuid();
     }
+
 }

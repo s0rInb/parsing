@@ -25,6 +25,16 @@ public class ClearRosminzdrav {
 
     @Column(name = "sys_recordid")
     private Long sys_recordid;
+    @Column(name = "serial_code")
+    private Integer serialCode;
+    @Column(name = "indexOfDuplicate")
+    private Integer indexOfDuplicate;
+
+    @Column(name = "clearRosZdravNadzor_serial_code")
+    private Integer clearRosZdravNadzorSerialNumber;
+
+    @Column(name = "ffoms_serial_code")
+    private Integer ffomsSerialNumber;
 
     @Column(name = "create_date", length = 1024)
     private String createDate;
@@ -122,18 +132,18 @@ public class ClearRosminzdrav {
         this.moAgencyKind = entityRosminzdrav.getMoAgencyKind();
         this.moDeptName = entityRosminzdrav.getMoDeptName();
         this.moLevel = entityRosminzdrav.getMoLevel();
-        this.modifyDate =entityRosminzdrav.getModifyDate();
+        this.modifyDate = entityRosminzdrav.getModifyDate();
         this.nameFull = entityRosminzdrav.getNameFull();
         this.nameShort = entityRosminzdrav.getNameShort();
         this.ogrn = entityRosminzdrav.getOgrn();
         this.oid = entityRosminzdrav.getOid();
         this.oldOid = entityRosminzdrav.getOldOid();
-        this.organizationType =entityRosminzdrav.getOrganizationType();
+        this.organizationType = entityRosminzdrav.getOrganizationType();
         this.parentId = entityRosminzdrav.getParentId();
         this.profileAgencyKind = entityRosminzdrav.getProfileAgencyKind();
         this.regionId = entityRosminzdrav.getRegionId();
         this.regionName = entityRosminzdrav.getRegionName();
-        this.searchInput =entityRosminzdrav.getSearchInput();
+        this.searchInput = entityRosminzdrav.getSearchInput();
         this.subscribed = entityRosminzdrav.getSubscribed();
         this.parentGuid = entityRosminzdrav.getGuid();
     }

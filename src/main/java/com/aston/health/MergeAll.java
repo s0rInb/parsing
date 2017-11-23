@@ -23,6 +23,8 @@ public class MergeAll {
         rosminzdravList.forEach(clearRosminzdrav -> {
             Result result = new Result();
             result.setClearRosminzdrav(clearRosminzdrav);
+            result.setClearRosminzdravSerialNumber(clearRosminzdrav.getSerialCode());
+            result.setCountTe(result.getCountTe() + 1);
             resultList.add(result);
         });
         ffomsList.stream().forEach(clearFfoms -> {
@@ -34,11 +36,15 @@ public class MergeAll {
                                     result.getClearRosminzdrav().getNameFull().equalsIgnoreCase(clearFfoms.getFullName())))
                     .findFirst().ifPresent(result -> {
                 result.setClearFfoms(clearFfoms);
+                result.setFfomsSerialNumber(clearFfoms.getSerialCode());
+                result.setCountTe(result.getCountTe() + 1);
                 isAdd[0] = true;
             });
             if (!isAdd[0]) {
                 Result result = new Result();
                 result.setClearFfoms(clearFfoms);
+                result.setFfomsSerialNumber(clearFfoms.getSerialCode());
+                result.setCountTe(result.getCountTe() + 1);
                 resultList.add(result);
             }
         });
@@ -49,24 +55,22 @@ public class MergeAll {
             resultList.stream().filter(result ->
                     result.getClearRosZdravNadzor() == null && (
                             (result.getClearRosminzdrav() != null && (
-                                    result.getClearRosminzdrav().getRegionName().equalsIgnoreCase(clearRosZdravNadzor.getRegionName())
-                                            && (result.getClearRosminzdrav().getNameShort().equalsIgnoreCase(clearRosZdravNadzor.getAbbreviatedNameLicensee())
+//                                    result.getClearRosminzdrav().getRegionName().equalsIgnoreCase(clearRosZdravNadzor.getRegionName()) &&
+                                    (result.getClearRosminzdrav().getNameShort().equalsIgnoreCase(clearRosZdravNadzor.getAbbreviatedNameLicensee())
                                             || result.getClearRosminzdrav().getNameFull().equalsIgnoreCase(clearRosZdravNadzor.getFullNameLicensee())) || result.getClearRosminzdrav().getInn().equalsIgnoreCase(clearRosZdravNadzor.getInn())))
                                     ||
                                     (result.getClearFfoms() != null) && (
-                                            result.getClearFfoms().getSubject().equalsIgnoreCase(clearRosZdravNadzor.getRegionName())
-                                                    && (result.getClearFfoms().getShortName().equalsIgnoreCase(clearRosZdravNadzor.getAbbreviatedNameLicensee())
+//                                            result.getClearFfoms().getSubject().equalsIgnoreCase(clearRosZdravNadzor.getRegionName()) &&
+                                            (result.getClearFfoms().getShortName().equalsIgnoreCase(clearRosZdravNadzor.getAbbreviatedNameLicensee())
                                                     || result.getClearFfoms().getFullName().equalsIgnoreCase(clearRosZdravNadzor.getFullNameLicensee())
                                             )))).findFirst().ifPresent(result -> {
                 result.setClearRosZdravNadzor(clearRosZdravNadzor);
+                result.setClearRosZdravNadzorSerialNumber(clearRosZdravNadzor.getSerialCode());
+                result.setCountTe(result.getCountTe() + 1);
                 isAdd[0] = true;
             });
-            if (!isAdd[0]) {
-                Result result = new Result();
-                result.setClearRosZdravNadzor(clearRosZdravNadzor);
-                resultList.add(result);
-            }
         });
+        resultList.removeIf(result -> result.getCountTe() == 1);
         long start = System.nanoTime();
         Transaction tx = session.beginTransaction();
         session.createNativeQuery("TRUNCATE TABLE result RESTART IDENTITY").executeUpdate();
@@ -82,6 +86,9 @@ public class MergeAll {
                 }
             }
         });
+        session.createNativeQuery("UPDATE clear_ffoms SET clearrosminzdrav_serial_code=result.clearrosminzdrav_serial_code,clearroszdravnadzor_serial_code=result.clearroszdravnadzor_serial_code from result WHERE clear_ffoms.guid=result.clearffoms_guid;").executeUpdate();
+        session.createNativeQuery("UPDATE clear_rosminzdrav SET clearroszdravnadzor_serial_code=result.clearroszdravnadzor_serial_code,ffoms_serial_code=result.ffoms_serial_code FROM result WHERE clear_rosminzdrav.guid=result.clearrosminzdrav_guid;").executeUpdate();
+        session.createNativeQuery("UPDATE clear_ros_zdrav_nadzor SET clearrosminzdrav_serial_code=result.clearrosminzdrav_serial_code,ffoms_serial_code=result.ffoms_serial_code FROM result WHERE clear_ros_zdrav_nadzor.guid=result.clearroszdravnadzor_guid;").executeUpdate();
         tx.commit();
         session.close();
         System.out.println("s");

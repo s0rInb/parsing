@@ -11,18 +11,37 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class FillClearRosZdravNadzor {
     private static int batch=0;
+    private static int serialCode=0;
     public static void main(String[] args) throws IOException, ParseException {
         clearTable();
         List<EntityRosMinZdravNadzor> unclearRosZdravNadzorList = getUnclearRosZdravNadzorList();
         List<ClearRosZdravNadzor> clearRosZdravNadzorsList = new ArrayList<>();
         unclearRosZdravNadzorList.forEach(entityRosMinZdravNadzor -> clearRosZdravNadzorsList.add(new ClearRosZdravNadzor(entityRosMinZdravNadzor)));
+        Map<String, List<ClearRosZdravNadzor>> collect = clearRosZdravNadzorsList.stream().collect(Collectors.groupingBy(ClearRosZdravNadzor::getInn));
+
+        collect.forEach((s, clearRosZdravNadz) -> {
+            try {
+                clearRosZdravNadz.sort((o1, o2) -> LocalDate.parse(o2.getDate(), DateTimeFormatter.ofPattern("dd.LL.yyyy")).compareTo(LocalDate.parse(o1.getDate(),DateTimeFormatter.ofPattern("dd.LL.yyyy"))));
+            }
+            catch (DateTimeParseException ignored){
+
+            }
+            for (int i=1; i<clearRosZdravNadz.size()+1; i++){
+                clearRosZdravNadz.get(i-1).setIndexOfDuplicate(i);
+                clearRosZdravNadz.get(i-1).setSerialCode(serialCode);
+            }
+            serialCode++;
+        });
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
         long start = System.nanoTime();
@@ -38,7 +57,6 @@ public class FillClearRosZdravNadzor {
                 }
             }
         });
-        session.createNativeQuery("UPDATE clear_ros_zdrav_nadzor crzn SET region_name=(SELECT sd.name from subject_dictionary sd WHERE sd.inn =substring(crzn.inn, 1,2))");
         tx.commit();
         session.close();
         System.out.println();
@@ -54,7 +72,7 @@ public class FillClearRosZdravNadzor {
 
     private static List<EntityRosMinZdravNadzor> getUnclearRosZdravNadzorList() {
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        List<EntityRosMinZdravNadzor> collect = session.createNativeQuery("SELECT * FROM (SELECT r1.*,RANK() OVER (PARTITION BY r1.abbreviated_name_licensee||r1.inn ORDER BY to_date(r1.date,'dd.mm.yyyy') DESC) dest_rank FROM ros_min_zdrav_nadzor r1) AS r1dr WHERE dest_rank = 1", EntityRosMinZdravNadzor.class).stream().collect(Collectors.toList());
+        List<EntityRosMinZdravNadzor> collect = session.createQuery("from EntityRosMinZdravNadzor ", EntityRosMinZdravNadzor.class).list();
         session.close();
         return collect;
     }

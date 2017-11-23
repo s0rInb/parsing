@@ -24,10 +24,16 @@ public class Result {
 
     @OneToOne
     private ClearFfoms clearFfoms;
-
+    @Column(name = "ffoms_serial_code")
+    private Integer ffomsSerialNumber;
     @OneToOne
     private ClearRosminzdrav clearRosminzdrav;
-
+    @Column(name = "clearRosminzdrav_serial_code")
+    private Integer clearRosminzdravSerialNumber;
     @OneToOne
     private ClearRosZdravNadzor clearRosZdravNadzor;
+    @Column(name = "clearRosZdravNadzor_serial_code")
+    private Integer clearRosZdravNadzorSerialNumber;
+
+    private Integer countTe = 0;
 }

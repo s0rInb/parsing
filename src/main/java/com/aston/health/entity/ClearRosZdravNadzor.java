@@ -22,11 +22,20 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @EqualsAndHashCode
 @NoArgsConstructor
-public class ClearRosZdravNadzor implements Comparable{
+public class ClearRosZdravNadzor implements Comparable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long guid;
 
+    @Column(name = "serial_code")
+    private Integer serialCode;
+    @Column(name = "indexOfDuplicate")
+    private Integer indexOfDuplicate;
+    @Column(name = "clearRosminzdrav_serial_code")
+    private Integer clearRosminzdravSerialNumber;
+
+    @Column(name = "ffoms_serial_code")
+    private Integer ffomsSerialNumber;
     @Column(name = "name", length = 4096)
     private String name;
 
@@ -104,7 +113,7 @@ public class ClearRosZdravNadzor implements Comparable{
     @Column(name = "region_name", length = 4096)
     private String regionName;
 
-    public ClearRosZdravNadzor(EntityRosMinZdravNadzor entityRosMinZdravNadzor){
+    public ClearRosZdravNadzor(EntityRosMinZdravNadzor entityRosMinZdravNadzor) {
         this.name = entityRosMinZdravNadzor.getName();
         this.activityType = entityRosMinZdravNadzor.getActivityType();
         this.fullNameLicensee = entityRosMinZdravNadzor.getFullNameLicensee();
@@ -120,7 +129,7 @@ public class ClearRosZdravNadzor implements Comparable{
         this.dateOrder = entityRosMinZdravNadzor.getDateOrder();
         this.dateRegister = entityRosMinZdravNadzor.getDateRegister();
         this.numberDuplicate = entityRosMinZdravNadzor.getNumberDuplicate();
-        this.dateDuplicate =entityRosMinZdravNadzor.getDateDuplicate();
+        this.dateDuplicate = entityRosMinZdravNadzor.getDateDuplicate();
         this.termination = entityRosMinZdravNadzor.getTermination();
         this.dateTermination = entityRosMinZdravNadzor.getDateTermination();
         this.information = entityRosMinZdravNadzor.getInformation();
@@ -128,7 +137,7 @@ public class ClearRosZdravNadzor implements Comparable{
         this.informationSuspensionResumption = entityRosMinZdravNadzor.getInformationSuspensionResumption();
         this.informationCancellation = entityRosMinZdravNadzor.getInformationCancellation();
         this.informationReissuing = entityRosMinZdravNadzor.getInformationReissuing();
-        this.parentGuid=entityRosMinZdravNadzor.getGuid();
+        this.parentGuid = entityRosMinZdravNadzor.getGuid();
 //        List<ClearAddress> clearAddresses = new ArrayList<>();
 //                entityRosMinZdravNadzor.getAddressPlace().forEach(address1 -> clearAddresses.add(new ClearAddress(address1,this)));
     }
